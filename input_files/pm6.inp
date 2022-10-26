@@ -1,0 +1,118 @@
+&GLOBAL
+  PROJECT dasa 
+  RUN_TYPE MD
+  PRINT_LEVEL LOW 
+&END GLOBAL
+
+!&EXT_RESTART
+!RESTART_FILE_NAME dasa.restart
+!&END
+
+&MOTION
+  &MD
+    ENSEMBLE NVT
+    STEPS 6000000
+    TIMESTEP 0.5
+    TEMPERATURE 300
+   &THERMOSTAT
+        &CSVR
+        TIMECON 100
+        &END
+   &END THERMOSTAT
+  &END MD
+  &PRINT
+     &VELOCITIES OFF
+     &END
+     &FORCES
+      &EACH
+         MD 4000
+      &END
+     &END
+     &TRAJECTORY
+      &EACH
+         MD 20
+      &END
+     &END
+     &RESTART
+      &EACH
+          MD 1000
+      &END
+     &END
+     &RESTART_HISTORY
+       &EACH
+          MD 50000
+       &END
+     &END
+  &END PRINT
+
+ &FREE_ENERGY
+    &METADYN
+      USE_PLUMED .TRUE.
+      PLUMED_INPUT_FILE ./plumed.dat
+    &END METADYN
+  &END FREE_ENERGY
+
+&END MOTION
+
+&FORCE_EVAL
+  METHOD Quickstep
+  &DFT
+    &QS
+      METHOD PM6
+    &END QS
+    &SCF
+    SCF_GUESS ATOMIC
+ #   SCF_GUESS RESTART
+    &END SCF
+  &END DFT
+  &SUBSYS
+    &CELL
+      ABC 25.0 25.0 25.0
+      PERIODIC NONE
+    &END CELL
+    &COORD
+ C             11.766   0.558   4.164  
+ O             10.645   0.157   3.853  
+ C             12.198   0.982   5.487  
+ C             13.639   1.176   5.741  
+ O             14.145   1.338   6.832  
+ C             11.371   1.138   6.598  
+ C              9.975   1.028   6.797  
+ O              9.075   0.689   5.848  
+ H              9.563   0.421   5.024  
+ C              9.491   1.310   8.072  
+ C             10.196   2.064   9.035  
+ C              9.668   2.300  10.283  
+ N             10.223   3.000  11.300  
+ C             13.907   1.321   3.351  
+ C             14.906   0.755   2.356  
+ C             13.610   2.804   3.129  
+ C             11.557   3.595  11.183  
+ C             12.685   2.596  11.463  
+ C              9.515   3.150  12.573  
+ C              8.806   4.499  12.722  
+ O             14.467   1.114   4.645  
+ O             12.702   0.556   3.177  
+ H             11.926   1.409   7.492  
+ H              8.516   0.911   8.333  
+ H             11.172   2.442   8.752  
+ H              8.687   1.889  10.516  
+ H              8.054   4.632  11.938  
+ H              8.304   4.556  13.693  
+ H              8.791   2.334  12.655  
+ H             10.237   3.009  13.385  
+ H             11.662   4.025  10.183  
+ H             12.656   1.764  10.756  
+ H             11.608   4.429  11.890  
+ H             12.605   2.188  12.476  
+ H             13.657   3.091  11.372  
+ H             12.886   3.168   3.863  
+ H             14.530   3.384   3.231  
+ H             13.199   2.955   2.128  
+ H             14.522   0.863   1.339  
+ H             15.067  -0.304   2.567  
+ H             15.856   1.285   2.442  
+ H              9.511   5.334  12.660  
+&END COORD
+  &END SUBSYS
+&END FORCE_EVAL
